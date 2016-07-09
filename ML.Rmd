@@ -63,11 +63,11 @@ plot(svd1$v[, 1], xlab = "Column", ylab = "First right singular vector", pch = 1
 ```
 
 ###Study design with cross validation
-To find the best model to predict the manner in which partecipant did the excercise we splited the dataset in 3 parts:
+To avoid to use the test set on every model that we tried to build - and in this sense to avoid to make the test set be part of the training set -, we split the dataset in 3 parts:
 
 - the training set (50%), used to build the model
 - the test set (25%), used to test the model
-- the validation set (25%), used at the end only one time on the choosed model
+- the validation set (25%), used at the end only one time, on the choosen model
 
 ```{r, echo=TRUE}
 inTrain = createDataPartition(dataSet$classe, p = 1/2)[[1]]
@@ -82,7 +82,7 @@ validation = testingToSplit[-inTest,]
 
 ```
 ###Building the model
-We buildt 3 different model:
+We built 3 different models, per each of that we looked at the accuracy rate. Here are shown the confusion matrix per every model:
 
 - **Random Forest**
 ```{r, echo=TRUE, cache=TRUE}
@@ -116,28 +116,30 @@ conf3 <- confusionMatrix(pred3, testing$classe)
 conf3$table
 ```
 
-**We choosed the model based on Random Forest because showed the best accuracy rate**
+**Based on this data, we choosen the Random Forest Model because shown the best accuracy rate**
 
 ```{r, echo=TRUE}
 data.frame("Random Forest" = conf1$overall[1], "Recursive Partitioning" = conf2$overall[1], "Linear Discriminant Analisys" = conf3$overall[1])
 ```
-The model based on Random Forest showed the best accuracy with 29 predictors:
+The model got the best accuracy with 28 predictors:
+
 ```{r}
+mod1
 plot(mod1, log="y", main="Accuracy Vs Predictors")
 ```
 
-Testing on the vadidation dataset we got a out of sample error of **0.004%**:
+Testing on the vadidation dataset we got a **out of sample error of 0.4%**:
 
 ```{r, echo = TRUE}
 predFinal <- predict(mod1, validation[,!names(validation) == 'classe'])
 confFinal <- confusionMatrix(predFinal, validation$classe)
 confFinal$table
 
-data.frame("In Sample Error" = (sum(conf1$table) - sum(diag(conf1$table)))/sum(diag(conf1$table)),
-           "Out Of Sample Error" = (sum(confFinal$table) - sum(diag(confFinal$table)))/sum(diag(confFinal$table)))
+data.frame("In Sample Error" = (sum(conf1$table) - sum(diag(conf1$table)))/sum(diag(conf1$table))*100,
+           "Out Of Sample Error" = (sum(confFinal$table) - sum(diag(confFinal$table)))/sum(diag(confFinal$table))*100)
 ```
 ###Predicting on the 20 test cases
-To predict the 20 test cases we did on the dataset the same trasformation that we did on the training set.
+To predict the 20 test cases, we did on the test dataset the same trasformation that we did on the training data. 
 
 ```{r, echo=TRUE}
 if (!"pml-testing.csv"  %in% dir()) {
