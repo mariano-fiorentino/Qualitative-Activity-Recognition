@@ -148,11 +148,11 @@ plot(svd1$v[, 1], xlab = &quot;Column&quot;, ylab = &quot;First right singular v
 </div>
 <div id="study-design-with-cross-validation" class="section level3">
 <h3>Study design with cross validation</h3>
-<p>To find the best model to predict the manner in which partecipant did the excercise we splited the dataset in 3 parts:</p>
+<p>To avoid to use the test set on every model that we tried to build - and in this sense to avoid to make the test set be part of the training set -, we split the dataset in 3 parts:</p>
 <ul>
 <li>the training set (50%), used to build the model</li>
 <li>the test set (25%), used to test the model</li>
-<li>the validation set (25%), used at the end only one time on the choosed model</li>
+<li>the validation set (25%), used at the end only one time, on the choosen model</li>
 </ul>
 <pre class="r"><code>inTrain = createDataPartition(dataSet$classe, p = 1/2)[[1]]
 
@@ -215,7 +215,7 @@ conf3$table</code></pre>
 ##          C  104  111  585   92   86
 ##          D  117   32  100  608   84
 ##          E    4   44   19   30  570</code></pre>
-<p><strong>Based on this data, we choose the Random Forest Model because shown the best accuracy rate</strong></p>
+<p><strong>Based on this data, we choosen the Random Forest Model because shown the best accuracy rate</strong></p>
 <pre class="r"><code>data.frame(&quot;Random Forest&quot; = conf1$overall[1], &quot;Recursive Partitioning&quot; = conf2$overall[1], &quot;Linear Discriminant Analisys&quot; = conf3$overall[1])</code></pre>
 <pre><code>##          Random.Forest Recursive.Partitioning Linear.Discriminant.Analisys
 ## Accuracy     0.9969425              0.4922544                    0.7183041</code></pre>
